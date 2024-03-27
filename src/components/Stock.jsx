@@ -12,7 +12,7 @@ const Stock = () => {
   const [stockDetails, setStockDetails] = useState(null);
   const [historicalPrices, setHistoricalPrices] = useState([]);
   const [chartInstance, setChartInstance] = useState(null);
-  const tradeDetails = useSelector(state => state.tradeDetails);
+
   useEffect(() => {
     const fetchStockDetails = async () => {
       if(name!="N/A"){

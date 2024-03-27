@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react'
+import React,{useState,useEffect,useMemo} from 'react'
 import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setTradeDetails } from './actions';
@@ -8,7 +8,7 @@ const Table = ({ TargetUrl }) => {
 
   const [trades, setTrades] = useState([]);  
   const apiUrl = 'http://127.0.0.1:5000/trades';
-  const targetUrl = 'https://www.capitoltrades.com/trades';
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -17,9 +17,11 @@ const Table = ({ TargetUrl }) => {
             url: TargetUrl
           }
         });
+
         const capitalizedTrades = response.data.Type.map(type => {
           return type === 'buy' ? 'Buy' : 'Sell';
         });
+
         const updatedTrades = { ...response.data, Type: capitalizedTrades };
         setTrades(updatedTrades);
       } catch (error) {
@@ -48,7 +50,6 @@ const Table = ({ TargetUrl }) => {
 
   const dispatch = useDispatch();
 
-  // Inside your component where you want to dispatch the action
   const handleLinkClick = (type, price) => {
     dispatch(setTradeDetails(type, price));
   };
@@ -88,6 +89,7 @@ const Table = ({ TargetUrl }) => {
               <td>{trades.Prices[index]}</td>
             </tr>
           ))}
+            {tableRows}
             </tbody>
         </table>
     </div>

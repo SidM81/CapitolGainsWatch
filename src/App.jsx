@@ -2,7 +2,6 @@ import {React,useState} from 'react';
 import Navbar from './components/Navbar';
 import Table from './components/Table';
 import Filters from './components/Filters';
-import Stock from './components/Stock';
 import { Provider } from 'react-redux';
 import store from './components/store';
 import './App.css';
