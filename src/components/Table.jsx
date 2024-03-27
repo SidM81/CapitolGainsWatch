@@ -2,26 +2,33 @@ import React,{useState,useEffect} from 'react'
 import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setTradeDetails } from './actions';
+import axios from 'axios';
 
-const Table = () => {
+const Table = ({ TargetUrl }) => {
 
   const [trades, setTrades] = useState([]);  
-
+  const apiUrl = 'http://127.0.0.1:5000/trades';
+  const targetUrl = 'https://www.capitoltrades.com/trades';
   useEffect(() => {
-    fetch('http://127.0.0.1:5000/trades') 
-      .then(response => response.json())
-      .then(data => {
-        setTrades(data);
-        const capitalizedTrades = data.Type.map(type => {
-            return type === 'buy' ? 'Buy' : 'Sell';
-          });
-          const updatedTrades = { ...data, Type: capitalizedTrades };
-          setTrades(updatedTrades);
-      })
-      .catch(error => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(apiUrl, {
+          params: {
+            url: TargetUrl
+          }
+        });
+        const capitalizedTrades = response.data.Type.map(type => {
+          return type === 'buy' ? 'Buy' : 'Sell';
+        });
+        const updatedTrades = { ...response.data, Type: capitalizedTrades };
+        setTrades(updatedTrades);
+      } catch (error) {
         console.error('Error fetching data:', error);
-      });
-  }, []);
+      }
+    };
+
+    fetchData();
+  }, [TargetUrl]);
 
   const getColor = (type) => {
     return type === 'Buy' ? 'green' : 'red';
@@ -72,7 +79,7 @@ const Table = () => {
                     </div>
                 )}
               </td>
-              <td ><Link Link to={`/stock?name=${trades.Issuers_Token[index]}`} onClick={() => handleLinkClick(trades.Type[index], trades.Prices[index])}style={{color:'blue'}}  >{trades.Issuers[index]}</Link></td>
+              <td ><Link Link to={`/stock?name=${trades.Issuers_token[index]}`} onClick={() => handleLinkClick(trades.Type[index], trades.Prices[index])}style={{color:'blue'}}  >{trades.Issuers[index]}</Link></td>
               <td style={{ color: getColor(trades.Type[index]) }}>{trades.Type[index]}</td>
               <td>{trades.Published[index].join(', ')}</td>
               <td>{trades.Traded[index].join(', ')}</td>

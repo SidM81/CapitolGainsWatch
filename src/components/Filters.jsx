@@ -1,48 +1,30 @@
 import React, { useState } from 'react';
 
-const Filters = () => {
+const Filters = ({ onUpdateUrl }) => {
     const [selectedGender, setSelectedGender] = useState('');
     const [selectedParty, setSelectedParty] = useState('');
     const [selectedChamber, setSelectedChamber] = useState('');
 
     const handleGoClick = () => {
         // Check if any selection has been made
+        const params = [];
+        
+        const filtered  = (filter,filtername) =>{
+            if(filter!==''){
+                let str = filtername+'='+filter.toLowerCase();
+                params.push(str);
+            }
+        };
 
-        if (selectedGender !== '' || selectedParty !== '' || selectedChamber !== '') {
-            // Perform action (e.g., fetch data based on selections)
-            console.log('Fetching data based on selections:', selectedGender, selectedParty, selectedChamber);
-        } else {
-            // Inform user that no selection has been made
-            alert('Please make a selection before clicking Go.');
-        }
-        var U_rl =" https://www.capitoltrades.com/trades";
-        if((selectedGender && selectedParty)){
-            U_rl+=`?gender=${selectedGender}`;
-            U_rl+=`&party=${selectedParty}`;
-        }
-        else if(selectedGender && selectedChamber){
-            U_rl+=`?gender=${selectedGender}`;
-            U_rl+=`&chamber=${selectedChamber}`;
-        }
-        else if(selectedParty && selectedChamber){
-            U_rl+=`?party=${selectedParty}`;
-            U_rl+=`&chamber=${selectedChamber}`;
-        }
-        else if(selectedParty && selectedChamber && selectedGender){
-            U_rl+=`?gender=${selectedGender}`;
-            U_rl+=`&party=${selectedParty}`;
-            U_rl+=`&chamber=${selectedChamber}`;
-        }
-        else if(selectedChamber){
-            U_rl+=`?chamber=${selectedChamber}`;
-        }
-        else if(selectedGender){
-            U_rl+=`?gender=${selectedGender}`;
-        }
-        else if(selectedParty){
-            U_rl+=`%Party=${selectedParty}`;
-        }
-        console.log(U_rl);
+        console.log('Fetching data based on selections:', selectedGender, selectedParty, selectedChamber);
+        filtered(selectedChamber,"chamber");
+        filtered(selectedGender,"gender");
+        filtered(selectedParty,"party");
+        const base_url = "https://www.capitoltrades.com/trades?";
+        var url = base_url + params.join('&');
+        console.log(url);
+        onUpdateUrl(url);
+
     };
 
     return (
