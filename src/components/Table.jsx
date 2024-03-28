@@ -14,7 +14,7 @@ const Table = ({ TargetUrl }) => {
         const cachedData = localStorage.getItem(TargetUrl);
         if (cachedData) {
           setTrades(JSON.parse(cachedData));
-          console.log("TESTTTT");
+          console.log("Cached Data");
         }
         else{
             const response = await axios.get(apiUrl, {
