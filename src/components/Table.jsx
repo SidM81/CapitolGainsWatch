@@ -8,29 +8,47 @@ const Table = ({ TargetUrl }) => {
 
   const [trades, setTrades] = useState([]);  
   const apiUrl = 'http://127.0.0.1:5000/trades';
-  
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(apiUrl, {
-          params: {
-            url: TargetUrl
+        const cachedData = localStorage.getItem(TargetUrl);
+        if (cachedData) {
+          setTrades(JSON.parse(cachedData));
+          console.log("TESTTTT");
+        }
+        else{
+            const response = await axios.get(apiUrl, {
+              params: {
+                url: TargetUrl
+              }
+            });
+
+            const capitalizedTrades = response.data.Type.map(type => {
+              return type === 'buy' ? 'Buy' : 'Sell';
+            });
+
+            const updatedTrades = { ...response.data, Type: capitalizedTrades };
+            setTrades(updatedTrades);
+            localStorage.setItem(TargetUrl, JSON.stringify(updatedTrades));
           }
-        });
-
-        const capitalizedTrades = response.data.Type.map(type => {
-          return type === 'buy' ? 'Buy' : 'Sell';
-        });
-
-        const updatedTrades = { ...response.data, Type: capitalizedTrades };
-        setTrades(updatedTrades);
-      } catch (error) {
+     } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
 
     fetchData();
+
+    window.addEventListener('beforeunload', clearLocalStorage);
+
+    return () => {
+      window.removeEventListener('beforeunload', clearLocalStorage);
+    };
+
   }, [TargetUrl]);
+
+  const clearLocalStorage = () => {
+    localStorage.removeItem(TargetUrl);
+  };
 
   const getColor = (type) => {
     return type === 'Buy' ? 'green' : 'red';
@@ -89,7 +107,6 @@ const Table = ({ TargetUrl }) => {
               <td>{trades.Prices[index]}</td>
             </tr>
           ))}
-            {tableRows}
             </tbody>
         </table>
     </div>
