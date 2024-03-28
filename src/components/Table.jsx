@@ -1,7 +1,5 @@
 import React,{useState,useEffect,useMemo} from 'react'
 import { Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { setTradeDetails } from './actions';
 import axios from 'axios';
 
 const Table = ({ TargetUrl }) => {
@@ -66,11 +64,7 @@ const Table = ({ TargetUrl }) => {
     }
   };
 
-  const dispatch = useDispatch();
 
-  const handleLinkClick = (type, price) => {
-    dispatch(setTradeDetails(type, price));
-  };
 
   return (
     <div className='Table'>
@@ -98,7 +92,7 @@ const Table = ({ TargetUrl }) => {
                     </div>
                 )}
               </td>
-              <td ><Link Link to={`/stock?name=${trades.Issuers_token[index]}`} onClick={() => handleLinkClick(trades.Type[index], trades.Prices[index])}style={{color:'blue'}}  >{trades.Issuers[index]}</Link></td>
+              <td ><Link Link to={`/stock?name=${trades.Issuers_token[index]}`} style={{color:'blue'}}  >{trades.Issuers[index]}</Link></td>
               <td style={{ color: getColor(trades.Type[index]) }}>{trades.Type[index]}</td>
               <td>{trades.Published[index].join(', ')}</td>
               <td>{trades.Traded[index].join(', ')}</td>
