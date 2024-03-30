@@ -133,3 +133,36 @@ tr:hover {
     margin-bottom: 0;
   }
   
+  .Footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #4169E1; /* Royal Blue background for the footer */
+    color: #FFF; /* White text color */
+    padding: 10px;
+  }
+  
+  .Prev_button,
+  .Next_button {
+    margin: 0 10px; /* Add margin around the buttons */
+  }
+  
+  button {
+    padding: 8px 16px; /* Adjust button padding */
+    font-size: 14px; /* Adjust button font size */
+    background-color: #1E90FF; /* Darker shade of blue */
+    color: #FFF; /* White text color */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Smooth transition effect */
+  }
+  
+  button:hover {
+    background-color: #0056b3; /* Darker shade of blue on hover */
+  }
+  
+  button:disabled {
+    background-color: #ccc; /* Light gray for disabled button */
+    cursor: not-allowed;
+  }

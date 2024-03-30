@@ -2,7 +2,7 @@ import React,{useState,useEffect,useMemo} from 'react'
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-const Table = ({ TargetUrl }) => {
+const Table = ({ TargetUrl,PageNo }) => {
 
   const [trades, setTrades] = useState([]);  
   const apiUrl = 'http://127.0.0.1:5000/trades';
@@ -104,6 +104,7 @@ const Table = ({ TargetUrl }) => {
             </tbody>
         </table>
     </div>
+
   )
 }
 
