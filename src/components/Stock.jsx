@@ -12,14 +12,31 @@ const Stock = () => {
   const [stockDetails, setStockDetails] = useState(null);
   const [historicalPrices, setHistoricalPrices] = useState([]);
   const [chartInstance, setChartInstance] = useState(null);
+  const [todayDate,setTodayDate] = useState('');
+  const [dateThirtyDaysBack, setDateThirtyDaysBack] = useState('');
+
+  useEffect(() => {
+    const today = new Date();
+    const todaydate = today.toISOString().split('T')[0];
+    setTodayDate(todaydate);
+    const pastDate = new Date();
+    pastDate.setDate(today.getDate() - 30);
+
+    const formattedDate = pastDate.toISOString().split('T')[0];
+
+    setDateThirtyDaysBack(formattedDate);
+  }, []);
+
 
   useEffect(() => {
     const fetchStockDetails = async () => {
       if(name!="N/A"){
         try {
-          const response = await fetch(`https://cloud.iexapis.com/stable/stock/${name}/quote?token=pk_292a8e1bbd3442a09e51dcfcbd0ebe5e`);
+          const targetUrl = `https://api.polygon.io/v1/open-close/${name}/2023-01-09?adjusted=true&sort=asc&apiKey=rptRAuA1JetbWKhnppWeylDdsFCGMgMO`;
+          const response = await fetch(`http://localhost:3001/api/proxy?targetUrl=${encodeURIComponent(targetUrl)}`);
           const data = await response.json();
           setStockDetails(data);
+          console.log(data);
         } catch (error) {
           console.error('Error fetching stock details:', error);
         }
@@ -27,15 +44,21 @@ const Stock = () => {
     };
 
     fetchStockDetails();
-  });
+  },[name,todayDate]);
 
   useEffect(() => {
     const fetchHistoricalPrices = async () => {
-      if (name !== "N/A") {
+      if (name && name !== "N/A") {
         try {
-          const response = await fetch(`https://cloud.iexapis.com/stable/stock/${name}/chart/1y?token=pk_292a8e1bbd3442a09e51dcfcbd0ebe5e`);
+          const targetUrl = `https://api.polygon.io/v2/aggs/ticker/${name}/range/1/day/${dateThirtyDaysBack}/${todayDate}?adjusted=true&sort=asc&apiKey=rptRAuA1JetbWKhnppWeylDdsFCGMgMO`;
+          const response = await fetch(`http://localhost:3001/api/proxy?targetUrl=${encodeURIComponent(targetUrl)}`);
           const data = await response.json();
-          setHistoricalPrices(data);
+          const formattedData = data.results.map(entry => ({
+            date: new Date(entry.t).toISOString().split('T')[0], // Format the timestamp to a date string
+            close: entry.c // Closing price
+          }));
+          setHistoricalPrices(formattedData);
+          console.log(formattedData);
         } catch (error) {
           console.error('Error fetching historical prices:', error);
         }
@@ -43,7 +66,7 @@ const Stock = () => {
     };
 
     fetchHistoricalPrices();
-  });
+  },[name, dateThirtyDaysBack, todayDate]);
 
   useEffect(() => {
     // Plot the graph using Chart.js
@@ -84,19 +107,20 @@ const Stock = () => {
   }, [historicalPrices]);
   
   return (
+
     <div className="stock-details">
       {stockDetails ? (
         <div>
-          <h2>{stockDetails.companyName} ({stockDetails.symbol})</h2>
-          <p>Latest Price: {stockDetails.latestPrice}</p>
+          <h2>{stockDetails.symbol}</h2>
+          <p>PreMarket Price: {stockDetails.preMarket}</p>
           <p>Open: {stockDetails.open}</p>
           <p>High: {stockDetails.high}</p>
           <p>Low: {stockDetails.low}</p>
-          <p>Previous Close: {stockDetails.previousClose}</p>
+          <p>Previous Close: {stockDetails.close}</p>
           <canvas id="stockChart" width="400" height="200"></canvas>
         </div>
       ) : (
-        <p>Not A Public Company</p>
+        <p>Not A Public Company{dateThirtyDaysBack} || {todayDate}</p>
       )}
     </div>
   );
