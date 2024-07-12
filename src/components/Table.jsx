@@ -46,6 +46,7 @@ const Table = ({ TargetUrl,PageNo }) => {
 
   const clearLocalStorage = () => {
     localStorage.removeItem(TargetUrl);
+    localStorage.clear();
   };
 
   const getColor = (type) => {
