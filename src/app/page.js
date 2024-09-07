@@ -184,7 +184,7 @@ export default function Home() {
               <div className="space-y-4">
                 <h1 className="text-3xl font-bold tracking-tight md:text-4xl">Transparency in Congress</h1>
                 <p className="text-muted-foreground md:text-xl">
-                  Track the stock trades made by US Congress members to promote accountability and transparency in
+                  Track the stock trades made by US Congress Members to promote accountability and transparency in
                   government.
                 </p>
                 <Link
